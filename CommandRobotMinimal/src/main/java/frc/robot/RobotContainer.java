@@ -6,8 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
-import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.commands.ArmCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final ArmSubsystem m_ArmSubsystem = new ArmSubsystem();
 
   private final CommandJoystick m_driverController =
       new CommandJoystick(OperatorConstants.kDriverControllerPort);
@@ -41,17 +41,18 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // Schedule `ArmCommand` when `ArmCondition` changes to `true`
+    new Trigger(m_ArmSubsystem::ArmCondition)
+        .onTrue(new ArmCommand(m_ArmSubsystem));
 
-    // Schedule `exampleMethodCommand` when the controller's button 1 is pressed,
+    // Schedule `ArmMethodCommand` when the controller's button 1 is pressed,
     // cancelling on release.
     m_driverController.button(OperatorConstants.kJoyButton1)
-        .onTrue(m_exampleSubsystem.exampleActivateCommand());
+        .onTrue(m_ArmSubsystem.ArmActivateCommand());
+
 
     m_driverController.button(OperatorConstants.kJoyButton2)
-        .onTrue(m_exampleSubsystem.exampleDeactivateCommand());
+        .onTrue(m_ArmSubsystem.ArmDeactivateCommand());
   }
 
   /**
@@ -60,7 +61,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    // An Arm command will be run in autonomous
+    return Autos.ArmAuto(m_ArmSubsystem);
   }
 }
