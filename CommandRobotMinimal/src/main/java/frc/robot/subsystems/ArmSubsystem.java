@@ -31,8 +31,13 @@ public class ArmSubsystem extends SubsystemBase {
         topMotor.set(speed);
     }
 
-    public void setBaseMotorSpeed(double speed) {
+    public void baseArmAttack(double speed) {
+        System.out.println("I am chopping!");
+
+
         bottomMotor.set(speed);
+        setTimeout(() -> bottomMotor.set(-speed), 200);
+        setTimeout(() -> bottomMotor.set(0), 200);    
     }
 
     public void setElbowSpeed(double speed) {
@@ -47,13 +52,6 @@ public class ArmSubsystem extends SubsystemBase {
   /**
    * 
    * @return
-   */
-  public void ArmDoSomething() {
-    if (isActive) {
-      // Do something
-
-    }
-  }
 
   /**
    * Arm command factory method.
