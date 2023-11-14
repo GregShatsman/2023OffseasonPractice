@@ -33,8 +33,10 @@ public class ArmCommand extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    ArmSubsystem.
+    ArmSubsystem.baseArmAttack(.2);
   }
+
+public void 
 
   // Called once the command ends or is interrupted.
   @Override

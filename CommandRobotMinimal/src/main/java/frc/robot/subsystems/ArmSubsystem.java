@@ -18,35 +18,50 @@ public class ArmSubsystem extends SubsystemBase {
   /** Simulation related variables */
   private long simNextEventTime = 0;
 
+  CANSparkMax bottomMotor = new CANSparkMax(7, MotorType.kBrushless);
+  CANSparkMax bottomMotor2 = new CANSparkMax(8, MotorType.kBrushless);
+
+  CANSparkMax topMotor = new CANSparkMax(15, MotorType.kBrushless);
+
 
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
-    CANSparkMax bottomMotor = new CANSparkMax(6, MotorType.kBrushless);
-    CANSparkMax topMotor = new CANSparkMax(7, MotorType.kBrushless);
+    bottomMotor.restoreFactoryDefaults();
+    bottomMotor.setSmartCurrentLimit(50);
+    bottomMotor.setIdleMode(IdleMode.kBrake);
+    bottomMotor.setOpenLoopRampRate(0.2);
+    bottomMotor.setInverted(false);
+
+    bottomMotor2.restoreFactoryDefaults();
+    bottomMotor2.setSmartCurrentLimit(50);
+    bottomMotor2.setIdleMode(IdleMode.kBrake);
+    bottomMotor2.setOpenLoopRampRate(0.2);
+    bottomMotor2.setInverted(false);
+
+    bottomMotor2.follow(bottomMotor);
 
 
-    private void setMotorSpeed(double speed) {
-        bottomMotor.set(speed);
-        topMotor.set(speed);
-    }
+  }
 
-    public void baseArmAttack(double speed) {
-        System.out.println("I am chopping!");
+  private void setMotorSpeed(double speed) {
+      bottomMotor.set(speed);
+      topMotor.set(speed);
+  }
 
+  public void baseArmAttack(double speed) {
+      System.out.println("I am chopping!");
 
-        bottomMotor.set(speed);
-        setTimeout(() -> bottomMotor.set(-speed), 200);
-        setTimeout(() -> bottomMotor.set(0), 200);    
-    }
+      bottomMotor.set(speed);
+      waitSeconds(.5);
+      bottomMotor.set(-speed);
+      waitSeconds(.5);
+      bottomMotor.set(0);
+        
+  }
 
-    public void setElbowSpeed(double speed) {
-        topMotor.set(speed);
-    }
-
-    
-
-   
+  public void setElbowSpeed(double speed) {
+      topMotor.set(speed);
   }
 
   /**
