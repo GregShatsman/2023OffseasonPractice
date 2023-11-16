@@ -53,11 +53,16 @@ public class ArmSubsystem extends SubsystemBase {
       System.out.println("I am chopping!");
 
       bottomMotor.set(speed);
-      waitSeconds(.5);
-      bottomMotor.set(-speed);
-      waitSeconds(.5);
-      bottomMotor.set(0);
-        
+
+  }
+
+  public Command baseArmSmashSequence() {
+    return Commands.sequence(
+      baseArmAttack(.2).withTimeout(0.5)
+      .andThen(Commands.waitSeconds(1))
+      .andThen(baseArmAttack(-0.2).withTimeout(0.5)
+      .andThen(setMotorSpeed(0)))
+      );
   }
 
   public void setElbowSpeed(double speed) {
@@ -93,6 +98,7 @@ public class ArmSubsystem extends SubsystemBase {
     return runOnce(
         () -> {
           System.out.println("Arm Activated");
+          baseArmSmashSequence();
           isActive = true;
         });
   }
