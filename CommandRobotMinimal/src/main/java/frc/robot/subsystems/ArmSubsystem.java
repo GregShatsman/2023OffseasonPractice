@@ -8,6 +8,9 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -18,7 +21,7 @@ public class ArmSubsystem extends SubsystemBase {
   /** Simulation related variables */
   private long simNextEventTime = 0;
 
-  CANSparkMax bottomMotor = new CANSparkMax(7, MotorType.kBrushless);
+  static CANSparkMax bottomMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax bottomMotor2 = new CANSparkMax(8, MotorType.kBrushless);
 
   CANSparkMax topMotor = new CANSparkMax(15, MotorType.kBrushless);
@@ -29,13 +32,11 @@ public class ArmSubsystem extends SubsystemBase {
   public ArmSubsystem() {
     bottomMotor.restoreFactoryDefaults();
     bottomMotor.setSmartCurrentLimit(50);
-    bottomMotor.setIdleMode(IdleMode.kBrake);
     bottomMotor.setOpenLoopRampRate(0.2);
     bottomMotor.setInverted(false);
 
     bottomMotor2.restoreFactoryDefaults();
     bottomMotor2.setSmartCurrentLimit(50);
-    bottomMotor2.setIdleMode(IdleMode.kBrake);
     bottomMotor2.setOpenLoopRampRate(0.2);
     bottomMotor2.setInverted(false);
 
@@ -44,24 +45,20 @@ public class ArmSubsystem extends SubsystemBase {
 
   }
 
-  private void setMotorSpeed(double speed) {
-      bottomMotor.set(speed);
-      topMotor.set(speed);
+  public static Command baseArmAttack(double speed) {
+    
+      return new FunctionalCommand(null, () -> {
+        System.out.println("I am chopping!");
+        bottomMotor.set(speed);
+      }, null, null, null);
   }
 
-  public void baseArmAttack(double speed) {
-      System.out.println("I am chopping!");
-
-      bottomMotor.set(speed);
-
-  }
-
-  public Command baseArmSmashSequence() {
+  public static Command baseArmSmashSequence() {
     return Commands.sequence(
       baseArmAttack(.2).withTimeout(0.5)
       .andThen(Commands.waitSeconds(1))
       .andThen(baseArmAttack(-0.2).withTimeout(0.5)
-      .andThen(setMotorSpeed(0)))
+      .andThen(baseArmAttack(0)))
       );
   }
 
