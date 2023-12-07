@@ -24,7 +24,8 @@ public class ArmSubsystem extends SubsystemBase {
   static CANSparkMax bottomMotor = new CANSparkMax(7, MotorType.kBrushless);
   CANSparkMax bottomMotor2 = new CANSparkMax(8, MotorType.kBrushless);
 
-  CANSparkMax topMotor = new CANSparkMax(15, MotorType.kBrushless);
+  static CANSparkMax topMotor = new CANSparkMax(15, MotorType.kBrushless);
+  CANSparkMax topMotor2 = new CANSparkMax(17, MotorType.kBrushless);
 
 
 
@@ -42,23 +43,34 @@ public class ArmSubsystem extends SubsystemBase {
 
     bottomMotor2.follow(bottomMotor);
 
+    topMotor2.restoreFactoryDefaults();
+    topMotor2.setSmartCurrentLimit(50);
+    topMotor2.setOpenLoopRampRate(0.2);
+    topMotor2.setInverted(false);
 
+    topMotor.restoreFactoryDefaults();
+    topMotor.setSmartCurrentLimit(50);
+    topMotor.setOpenLoopRampRate(0.2);
+    topMotor.setInverted(false);
+
+    topMotor2.follow(topMotor);
   }
 
   public static Command baseArmAttack(double speed) {
     
       return new FunctionalCommand(null, () -> {
         System.out.println("I am chopping!");
-        bottomMotor.set(speed);
-      }, null, null, null);
+        topMotor.set(speed);
+      }, (bool) -> {}, () -> {return false;});
   }
 
   public static Command baseArmSmashSequence() {
     return Commands.sequence(
-      baseArmAttack(.2).withTimeout(0.5)
+      baseArmAttack(.29).withTimeout(1)
       .andThen(Commands.waitSeconds(1))
-      .andThen(baseArmAttack(-0.2).withTimeout(0.5)
-      .andThen(baseArmAttack(0)))
+      .andThen(baseArmAttack(-0.4).withTimeout(0.3)
+      .andThen(baseArmAttack(0.2).withTimeout(.5))
+      )
       );
   }
 
@@ -89,15 +101,16 @@ public class ArmSubsystem extends SubsystemBase {
    *
    * @return a command
    */
-  public CommandBase ArmActivateCommand() {
+  public Command ArmActivateCommand() {
     // Inline construction of command goes here.
     // Subsystem::RunOnce implicitly requires `this` subsystem.
-    return runOnce(
-        () -> {
-          System.out.println("Arm Activated");
-          baseArmSmashSequence();
-          isActive = true;
-        });
+    // return runOnce(
+    //     () -> {
+    //       System.out.println("Arm Activated");
+    //       baseArmSmashSequence();
+    //       isActive = true;
+    //     });
+    return baseArmSmashSequence();
   }
 
   /**
