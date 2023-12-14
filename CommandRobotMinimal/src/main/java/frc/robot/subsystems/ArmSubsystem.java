@@ -11,6 +11,8 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.math.controller.*;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 
 public class ArmSubsystem extends SubsystemBase {
 
@@ -27,7 +29,7 @@ public class ArmSubsystem extends SubsystemBase {
   static CANSparkMax topMotor = new CANSparkMax(15, MotorType.kBrushless);
   CANSparkMax topMotor2 = new CANSparkMax(17, MotorType.kBrushless);
 
-
+  static DutyCycleEncoder topMotorEncoder = new DutyCycleEncoder(0);
 
   /** Creates a new ArmSubsystem. */
   public ArmSubsystem() {
@@ -59,12 +61,14 @@ public class ArmSubsystem extends SubsystemBase {
   public static Command baseArmAttack(double speed) {
     
       return new FunctionalCommand(null, () -> {
-        System.out.println("I am chopping!");
         topMotor.set(speed);
       }, (bool) -> {}, () -> {return false;});
   }
 
   public static Command baseArmSmashSequence() {
+    PIDController nirmit = new PIDController(4, 1, 0);
+    PIDController prashanth = new PIDController(4, 1, 0);
+
     return Commands.sequence(
       baseArmAttack(.29).withTimeout(1)
       .andThen(Commands.waitSeconds(1))
@@ -78,6 +82,10 @@ public class ArmSubsystem extends SubsystemBase {
       topMotor.set(speed);
   }
 
+  public static void printEncoder()
+ {
+  System.out.println(topMotorEncoder.getDistance());
+ }
   /**
    * 
    * @return
