@@ -60,7 +60,7 @@ public class ArmSubsystem extends SubsystemBase {
 
   public static Command baseArmAttack(double speed) {
     
-      return new FunctionalCommand(null, () -> {
+      return new FunctionalCommand(() -> {}, () -> {
         topMotor.set(speed);
       }, (bool) -> {}, () -> {return false;});
   }
@@ -82,10 +82,9 @@ public class ArmSubsystem extends SubsystemBase {
       topMotor.set(speed);
   }
 
-  public static void printEncoder()
- {
-  System.out.println(topMotorEncoder.getDistance());
- }
+  public static void printEncoder() {
+    System.out.println(topMotorEncoder.getDistance());
+  }
   /**
    * 
    * @return
